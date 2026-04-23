@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DemandSense AI — Intelligent Demand Forecasting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06080f;
+  --surface: #0d1117;
+  --surface2: #131920;
+  --border: rgba(255,255,255,0.06);
+  --accent: #00d4ff;
+  --accent2: #7b61ff;
+  --accent3: #00ff9d;
+  --text: #e8edf5;
+  --muted: #6b7a92;
+  --glow: 0 0 60px rgba(0,212,255,0.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Animated grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Glow orbs */
+.orb1 {
+  position: fixed;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+  top: -200px; right: -100px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: floatOrb 8s ease-in-out infinite;
+}
+.orb2 {
+  position: fixed;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(123,97,255,0.08) 0%, transparent 70%);
+  bottom: -100px; left: -100px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: floatOrb 10s ease-in-out infinite reverse;
+}
+@keyframes floatOrb {
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(30px); }
+}
+
+/* HEADER */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 60px;
+  background: rgba(6,8,15,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+nav a:hover, nav a.active {
+  color: var(--text);
+  background: var(--border);
+}
+
+.nav-cta {
+  background: linear-gradient(135deg, var(--accent), var(--accent2)) !important;
+  color: white !important;
+  margin-left: 8px;
+}
+
+.nav-cta:hover {
+  opacity: 0.85;
+  background: linear-gradient(135deg, var(--accent), var(--accent2)) !important;
+}
+
+/* HERO */
+.hero {
+  position: relative;
+  z-index: 1;
+  padding: 180px 60px 100px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 28px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.badge-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.5; transform:scale(1.3); }
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+
+.hero h1 span {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 48px;
+  margin-bottom: 64px;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(20px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+/* UPLOAD SECTION */
+.upload-section {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto 120px;
+  padding: 0 60px;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+
+.upload-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.5;
+}
+
+.upload-card h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.upload-card > p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+.drop-zone {
+  border: 2px dashed rgba(0,212,255,0.2);
+  border-radius: 14px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: rgba(0,212,255,0.02);
+  position: relative;
+}
+
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color: var(--accent);
+  background: rgba(0,212,255,0.05);
+}
+
+.drop-icon {
+  width: 56px; height: 56px;
+  background: rgba(0,212,255,0.1);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 16px;
+}
+
+.drop-zone h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.drop-zone p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.drop-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.file-selected {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0,255,157,0.05);
+  border: 1px solid rgba(0,255,157,0.2);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 16px;
+}
+
+.file-selected.show { display: flex; }
+
+.file-icon {
+  font-size: 20px;
+}
+
+.file-info {
+  flex: 1;
+}
+
+.file-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accent3);
+}
+
+.file-size {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.predict-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 24px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  letter-spacing: 0.3px;
+}
+
+.predict-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,212,255,0.3);
+}
+
+.predict-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.predict-btn .spinner {
+  display: none;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.predict-btn.loading .spinner { display: block; }
+.predict-btn.loading .btn-text { opacity: 0.7; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.upload-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.upload-hint span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* FEATURES */
+.features {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto 120px;
+  padding: 0 60px;
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 48px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,212,255,0.03), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.feature-card:hover {
+  border-color: rgba(0,212,255,0.2);
+  transform: translateY(-4px);
+}
+
+.feature-card:hover::before {
+  opacity: 1;
+}
+
+.feature-emoji {
+  font-size: 28px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.feature-card h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* HOW IT WORKS */
+.how-it-works {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto 80px;
+  padding: 0 60px;
+}
+
+.steps {
+  display: flex;
+  gap: 0;
+  position: relative;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+  opacity: 0.2;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.step-num {
+  width: 48px; height: 48px;
+  background: var(--surface);
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0 auto 20px;
+}
+
+.step h4 {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.step p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* FOOTER */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 32px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+footer .logo { font-size: 16px; }
+
+footer p {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Error message */
+.error-msg {
+  display: none;
+  background: rgba(255,80,80,0.1);
+  border: 1px solid rgba(255,80,80,0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #ff8080;
+  margin-top: 12px;
+  align-items: center;
+  gap: 8px;
+}
+.error-msg.show { display: flex; }
+</style>
+</head>
+<body>
+
+<div class="orb1"></div>
+<div class="orb2"></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">📈</div>
+    DemandSense AI
+  </div>
+  <nav>
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="index.html" class="nav-cta">Get Forecast →</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    Powered by Prophet ML Model
+  </div>
+  <h1>Predict Product<br>Demand with <span>AI Precision</span></h1>
+  <p>Upload your historical sales data and get intelligent 30-day demand forecasts powered by Facebook's Prophet algorithm.</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-value">30-Day</div>
+      <div class="stat-label">Forecast Window</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">ML</div>
+      <div class="stat-label">Powered by Prophet</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">Excel</div>
+      <div class="stat-label">Easy Data Upload</div>
+    </div>
+  </div>
+</section>
+
+<div class="upload-section">
+  <div class="upload-card">
+    <h2>Upload Sales Data</h2>
+    <p>Upload your Excel file (.xlsx) with date and sales columns to generate your demand forecast.</p>
+
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-icon">📂</div>
+      <h3>Drop your Excel file here</h3>
+      <p>or click to browse — .xlsx format required</p>
+      <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="handleFileSelect(this)">
+    </div>
+
+    <div class="file-selected" id="fileSelected">
+      <div class="file-icon">📊</div>
+      <div class="file-info">
+        <div class="file-name" id="fileName">—</div>
+        <div class="file-size" id="fileSize">—</div>
+      </div>
+      <span style="color:var(--accent3); font-size:18px;">✓</span>
+    </div>
+
+    <div class="error-msg" id="errorMsg">
+      <span>⚠️</span>
+      <span id="errorText">Something went wrong. Please try again.</span>
+    </div>
+
+    <button class="predict-btn" id="predictBtn" onclick="uploadFile()" disabled>
+      <div class="spinner"></div>
+      <span class="btn-text">Generate Demand Forecast →</span>
+    </button>
+
+    <div class="upload-hint">
+      <span>💡</span>
+      <span>Your Excel file needs two columns: <strong>date</strong> and <strong>sales</strong></span>
+    </div>
+  </div>
+</div>
+
+<section class="features">
+  <div class="section-label">What You Get</div>
+  <div class="section-title">Everything you need to plan ahead</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-emoji">🔮</span>
+      <h3>30-Day Forecasting</h3>
+      <p>Get day-by-day predictions for the next month based on your historical sales trends and seasonality patterns.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-emoji">📊</span>
+      <h3>Interactive Charts</h3>
+      <p>Beautiful visualizations of your forecast with confidence intervals, trend lines, and comparison views.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-emoji">⬇️</span>
+      <h3>PDF Report Export</h3>
+      <p>Download a fully formatted PDF report with all charts and analysis to share with your team.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-emoji">📈</span>
+      <h3>Trend Analysis</h3>
+      <p>Understand growth trajectories, seasonal fluctuations, and demand patterns hidden in your data.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-emoji">⚡</span>
+      <h3>Instant Results</h3>
+      <p>Get your complete demand forecast in seconds — no waiting, no complex setup required.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-emoji">🎯</span>
+      <h3>Prophet Algorithm</h3>
+      <p>Powered by Facebook's battle-tested Prophet model, specifically built for business time-series forecasting.</p>
+    </div>
+  </div>
+</section>
+
+<section class="how-it-works">
+  <div class="section-label">Process</div>
+  <div class="section-title">How it works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h4>Upload Your Data</h4>
+      <p>Drag & drop your Excel file with historical sales records</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h4>AI Analysis</h4>
+      <p>Our Prophet model analyzes trends, seasonality, and patterns</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h4>View Forecast</h4>
+      <p>Explore interactive charts and detailed day-by-day predictions</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h4>Download Report</h4>
+      <p>Export a professional PDF report for your team</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">
+    <div class="logo-icon">📈</div>
+    DemandSense AI
+  </div>
+  <p>© 2026 DemandSense AI · Intelligent Demand Forecasting</p>
+</footer>
+
+<script>
+function handleFileSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const nameEl = document.getElementById('fileName');
+  const sizeEl = document.getElementById('fileSize');
+  const selectedEl = document.getElementById('fileSelected');
+  const btnEl = document.getElementById('predictBtn');
+
+  nameEl.textContent = file.name;
+  sizeEl.textContent = (file.size / 1024).toFixed(1) + ' KB';
+  selectedEl.classList.add('show');
+  btnEl.disabled = false;
+
+  document.getElementById('errorMsg').classList.remove('show');
+}
+
+// Drag & drop visual
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('drag-over');
+  const dt = e.dataTransfer;
+  if (dt.files.length) {
+    document.getElementById('fileInput').files = dt.files;
+    handleFileSelect(document.getElementById('fileInput'));
+  }
+});
+
+async function uploadFile() {
+  const file = document.getElementById("fileInput").files[0];
+  if (!file) return;
+
+  const btn = document.getElementById('predictBtn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  document.getElementById('errorMsg').classList.remove('show');
+
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("http://127.0.0.1:5000/predict_excel", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!res.ok) throw new Error('Server error: ' + res.status);
+
+    const data = await res.json();
+    localStorage.setItem("prediction", data.next_month_total_product.toFixed(2));
+    localStorage.setItem("fileName", file.name);
+    localStorage.removeItem("dailyForecast"); // clear old forecast so new data generates fresh
+    window.location = "result.html";
+
+  } catch (err) {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    document.getElementById('errorText').textContent = err.message || 'Failed to connect. Make sure your backend is running.';
+    document.getElementById('errorMsg').classList.add('show');
+  }
+}
+</script>
+</body>
+</html>
